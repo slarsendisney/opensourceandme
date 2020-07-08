@@ -65,6 +65,7 @@ export default ({ auth }) => {
   }
   return (
     <div className="is-white-bg">
+      <SEO title="Stats" />
       <div className="is-black container-small pad-10-tb pad-1-lr">
         <div className="row">
           <div className="col-xs-12 flex align-vertical pad-10-b">

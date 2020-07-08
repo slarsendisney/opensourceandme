@@ -31,6 +31,7 @@ export default ({ redirectURL }) => {
   }
   return (
     <Layout small={true}>
+      <SEO title="Login" />
       <div className="is-white-bg">
         <div className="is-black container pad-10-tb pad-3-lr">
           <h1 className="margin-0 is-hero-sub-text">Sign in</h1>

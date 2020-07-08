@@ -2,6 +2,7 @@ import React from "react"
 import { navigate } from "gatsby"
 import FirebaseAuth from "react-firebaseui/FirebaseAuth"
 import Layout from "./layout"
+import SEO from "./seo"
 let firebase
 let uiConfig
 

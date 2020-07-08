@@ -4,6 +4,7 @@ import { query, headers } from "../data/query"
 import Loader from "./Loader"
 import Medium from "./Medium"
 import Simple from "./Simple"
+import SEO from "./seo"
 
 let firebase
 if (typeof window !== "undefined") {

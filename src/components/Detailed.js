@@ -17,12 +17,18 @@ export default ({ data, openSourceStats }) => {
         )
       : 0
 
-  const mostCommits = openSourceCommitStats.repos.sort(
-    (a, b) => b.contributions.totalCount - a.contributions.totalCount
-  )[0]
-  const leastCommits = openSourceCommitStats.repos.sort(
-    (a, b) => b.contributions.totalCount - a.contributions.totalCount
-  )[openSourceCommitStats.repos.length - 1]
+  const mostCommits =
+    openSourceCommitStats.repos.length > 0
+      ? openSourceCommitStats.repos.sort(
+          (a, b) => b.contributions.totalCount - a.contributions.totalCount
+        )[0]
+      : ""
+  const leastCommits =
+    openSourceCommitStats.repos.length > 0
+      ? openSourceCommitStats.repos.sort(
+          (a, b) => b.contributions.totalCount - a.contributions.totalCount
+        )[openSourceCommitStats.repos.length - 1]
+      : ""
 
   const percentOSPRS =
     openSourcePRStats.prs > 0
@@ -60,22 +66,28 @@ export default ({ data, openSourceStats }) => {
           </strong>{" "}
           of your commits were open source.{" "}
         </h1>
-        <h2 className="font-weight-normal">
-          Most of your open source commits were made in the{" "}
-          <a className="is-special-blue" href={mostCommits.repository.url}>
-            {mostCommits.repository.name}
-          </a>{" "}
-          repository where you made{" "}
-          <strong>{mostCommits.contributions.totalCount}</strong> commit
-          contribution{mostCommits.contributions.totalCount > 1 ? "s" : ""}. The
-          least commits were made in the{" "}
-          <a className="is-special-blue" href={leastCommits.repository.url}>
-            {leastCommits.repository.name}
-          </a>{" "}
-          repository where you made{" "}
-          <strong>{leastCommits.contributions.totalCount}</strong> commit
-          contribution{leastCommits.contributions.totalCount > 1 ? "s" : ""}.
-        </h2>
+        {openSourceCommitStats.repos.length > 0 && (
+          <>
+            <h2 className="font-weight-normal">
+              Most of your open source commits were made in the{" "}
+              <a className="is-special-blue" href={mostCommits.repository.url}>
+                {mostCommits.repository.name}
+              </a>{" "}
+              repository where you made{" "}
+              <strong>{mostCommits.contributions.totalCount}</strong> commit
+              contribution{mostCommits.contributions.totalCount > 1 ? "s" : ""}.
+              The least commits were made in the{" "}
+              <a className="is-special-blue" href={leastCommits.repository.url}>
+                {leastCommits.repository.name}
+              </a>{" "}
+              repository where you made{" "}
+              <strong>{leastCommits.contributions.totalCount}</strong> commit
+              contribution{leastCommits.contributions.totalCount > 1 ? "s" : ""}
+              .
+            </h2>
+          </>
+        )}
+
         <div
           className="fill-width is-light-grey-bg border-radius"
           style={{ position: "relative", height: 20 }}

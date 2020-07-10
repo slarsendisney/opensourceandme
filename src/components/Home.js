@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react"
-import { Link, navigate } from "gatsby"
+import { navigate } from "gatsby"
 import { query, headers } from "../data/query"
 import Loader from "./Loader"
 import Medium from "./Medium"
 import Simple from "./Simple"
 import SEO from "./seo"
+import Detail from "./Detailed"
 
 let firebase
 if (typeof window !== "undefined") {
@@ -32,7 +33,7 @@ export default ({ auth }) => {
     return (
       <div className="is-black container-small pad-10-tb pad-3-lr text-align-center">
         <Loader />
-        <h3 className="opacity-50">Scanning Github...</h3>
+        <h3 className="opacity-50">Sourcing Github Data...</h3>
       </div>
     )
   }
@@ -40,9 +41,8 @@ export default ({ auth }) => {
   const handleOptionChange = changeEvent => {
     setOption(changeEvent.target.value)
   }
-  const statDetailLevels = ["simple", "medium"] //, "detailed"]
-  console.log(data)
-  let openSourceStats = data.viewer.contributionsCollection.commitContributionsByRepository.reduce(
+  const statDetailLevels = ["simple", "medium", "detailed"] //, "detailed"]
+  let openSourceCommitStats = data.viewer.contributionsCollection.commitContributionsByRepository.reduce(
     (acc, cur) => {
       if (cur.repository.owner.login !== login) {
         acc.commits += cur.contributions.totalCount
@@ -53,6 +53,33 @@ export default ({ auth }) => {
     },
     { commits: 0, totalCommits: 0, repos: [] }
   )
+  let openSourcePRStats = data.viewer.contributionsCollection.pullRequestContributionsByRepository.reduce(
+    (acc, cur) => {
+      if (cur.repository.owner.login !== login) {
+        acc.prs += cur.contributions.totalCount
+        acc.repos.push(cur)
+      }
+      acc.totalPRs += cur.contributions.totalCount
+      return acc
+    },
+    { prs: 0, totalPRs: 0, repos: [] }
+  )
+  let openSourcePRReviewStats = data.viewer.contributionsCollection.pullRequestReviewContributionsByRepository.reduce(
+    (acc, cur) => {
+      if (cur.repository.owner.login !== login) {
+        acc.prReviews += cur.contributions.totalCount
+        acc.repos.push(cur)
+      }
+      acc.totalPRReviews += cur.contributions.totalCount
+      return acc
+    },
+    { prReviews: 0, totalPRReviews: 0, repos: [] }
+  )
+  const openSourceStats = {
+    openSourceCommitStats,
+    openSourcePRStats,
+    openSourcePRReviewStats,
+  }
   console.log(openSourceStats)
   const renderView = () => {
     switch (option) {
@@ -61,7 +88,7 @@ export default ({ auth }) => {
       case "medium":
         return <Medium data={data} openSourceStats={openSourceStats} />
       default:
-        return <div>DETAILED</div>
+        return <Detail data={data} openSourceStats={openSourceStats} />
     }
   }
   return (
@@ -104,19 +131,17 @@ export default ({ auth }) => {
           </div>
 
           {renderView()}
-          <div className="col-xs-12" />
-          <div className="col-xs-12 col-sm-4 col-md-3 col-lg-2 pad-10-t">
-            <h1 className="margin-0 margin-5-b">All done?</h1>
-
+          <div className="col-xs-12 pad-10-t">
+            <h1 className="margin-0 margin-5-b">
+              All Done {data.viewer.name.split(" ")[0]}?
+            </h1>
+          </div>
+          <div className="col-xs-12 col-sm-4 col-md-3 col-lg-2 ">
             <button
               className={`is-black-bg pad-3-tb pad-10-lr border-radius is-white lato fill-width`}
               onClick={() => {
-                firebase
-                  .auth()
-                  .signOut()
-                  .then(function () {
-                    navigate("/logout")
-                  })
+                firebase.auth().signOut()
+                navigate("/logout")
               }}
             >
               <h2 className="margin-0">Logout</h2>

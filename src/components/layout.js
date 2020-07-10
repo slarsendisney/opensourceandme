@@ -2,11 +2,12 @@ import React from "react"
 import { Helmet } from "react-helmet"
 import CookieConsent from "react-cookie-consent"
 import { Emojione } from "react-emoji-render"
+
 import Header from "./Header"
 
 const Layout = ({ children, small, location }) => {
   return (
-    <div className="is-grey">
+    <>
       <Helmet>
         <link
           rel="stylesheet"
@@ -33,6 +34,7 @@ const Layout = ({ children, small, location }) => {
         </h4>
       </CookieConsent>
       <Header small={small} />
+
       <body
         className={`${
           location ? (location.pathname === "/" ? "small-body" : "") : ""
@@ -52,7 +54,7 @@ const Layout = ({ children, small, location }) => {
           </a>
         </p>
       </footer>
-    </div>
+    </>
   )
 }
 
